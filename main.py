@@ -1,4 +1,5 @@
 import requests
+from collections import Counter
 
 
 def get_text(url):
@@ -6,19 +7,12 @@ def get_text(url):
     return response.text
 
 
-def count_word_frequencies(url, word):
-    text = get_text(url)
-    words = text.split()
-    count = 0
-    for w in words:
-        if w == word:
-            count += 1
-    return count
-
-
 def main():
     words_file = "words.txt"
     url = "https://eng.mipt.ru/why-mipt/"
+
+    text = get_text(url)
+    page_counts = Counter(text.split())
 
     words_to_count = []
     with open(words_file, "r") as file:
@@ -27,9 +21,7 @@ def main():
             if word:
                 words_to_count.append(word)
 
-    frequencies = {}
-    for word in words_to_count:
-        frequencies[word] = count_word_frequencies(url, word)
+    frequencies = {word: page_counts[word] for word in words_to_count}
 
     print(frequencies)
 
